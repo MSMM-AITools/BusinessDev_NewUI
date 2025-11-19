@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run test:db)",
+      "Bash(cd:*)",
+      "Bash(cd /Users/rajmehta/Desktop/AITools\\ -\\ MSMMEng/BusinessDev && npm run api:*)",
+      "Bash(curl:*)",
+      "Bash(npm run api:*)",
+      "Bash(python3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
