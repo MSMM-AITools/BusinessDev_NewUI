@@ -1525,8 +1525,8 @@ async function saveEntry() {
         console.log('Form data:', data);
 
         // Check for duplicate title (when creating new or changing title)
-        if (data.TITLE && allData && Array.isArray(allData)) {
-            const existingEntry = allData.find(item => 
+        if (data.TITLE && tableData && Array.isArray(tableData)) {
+            const existingEntry = tableData.find(item => 
                 item.TITLE && 
                 item.TITLE.trim().toLowerCase() === data.TITLE.trim().toLowerCase() && 
                 item.PID !== currentEditId
@@ -1598,7 +1598,7 @@ async function deleteEntry(id) {
     if (!id) return;
 
     // Get entry title for confirmation message
-    const entry = allData.find(item => item.PID === id);
+    const entry = tableData.find(item => item.PID === id);
     const entryName = entry ? `"${entry.TITLE || 'this entry'}"` : 'this entry';
 
     const confirmed = await ConfirmDialog.confirmDelete(entryName);
