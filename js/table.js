@@ -975,7 +975,8 @@ async function buildFormFields(data = {}) {
         // Large text fields
         else if (col.length > 500 || col.name.includes('DETAILS') || col.name.includes('NOTES') || col.name.includes('DESCRIPTION')) {
             input = document.createElement('textarea');
-            input.rows = 3;
+            // Use 2 rows for TITLE field, 3 rows for other large text fields
+            input.rows = col.name === 'TITLE' ? 2 : 3;
             input.className = 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm';
             input.value = data[col.name] !== undefined && data[col.name] !== null ? data[col.name] : '';
         }
@@ -1523,30 +1524,6 @@ async function saveEntry() {
         }
 
         console.log('Form data:', data);
-
-        // Check for duplicate title (when creating new or changing title)
-        if (data.TITLE && tableData && Array.isArray(tableData)) {
-            const existingEntry = tableData.find(item => 
-                item.TITLE && 
-                item.TITLE.trim().toLowerCase() === data.TITLE.trim().toLowerCase() && 
-                item.PID !== currentEditId
-            );
-
-            if (existingEntry) {
-                const confirmed = await ConfirmDialog.show({
-                    title: 'Duplicate Title Detected',
-                    message: `A proposal with the title "${data.TITLE}" already exists (ID: ${existingEntry.PID}). Are you sure you want to create another entry with the same title?`,
-                    confirmText: 'Save Anyway',
-                    cancelText: 'Cancel',
-                    type: 'warning'
-                });
-
-                if (!confirmed) {
-                    ButtonUtils.removeLoading(saveButton);
-                    return;
-                }
-            }
-        }
 
         let response;
 

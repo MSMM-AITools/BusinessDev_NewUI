@@ -769,15 +769,7 @@ app.post('/api/proposals/:id/archive-and-copy-to-proposal', async (req, res) => 
         // Create new proposal with same data except STATUS and CATEGORY
         // Exclude: PID (auto-generated), CLIENT_NAME/ORG_TYPE (joined columns), audit columns (auto-generated)
         const excludeColumns = ['PID', 'CLIENT_NAME', 'ORG_TYPE', 'CREATED_BY', 'MODIFIED_BY', 'CREATED_DATE', 'MODIFIED_DATE'];
-        
-        console.log('========== ARCHIVE & COPY DEBUG ==========');
-        console.log('All pursuit keys:', Object.keys(pursuit));
-        console.log('Total keys:', Object.keys(pursuit).length);
-        
         const columns = Object.keys(pursuit).filter(key => !excludeColumns.includes(key));
-        
-        console.log('Filtered columns:', columns);
-        console.log('Filtered count:', columns.length);
 
         // Build newData object with only the columns we're inserting
         const newData = {};
@@ -787,13 +779,7 @@ app.post('/api/proposals/:id/archive-and-copy-to-proposal', async (req, res) => 
         newData.STATUS = 'Awaiting Verdict';
         newData.CATEGORY = 'Proposal Submitted';
 
-        console.log('newData keys:', Object.keys(newData));
-        console.log('newData count:', Object.keys(newData).length);
-
         const placeholders = columns.map(col => `:${col}`);
-        
-        console.log('Placeholders count:', placeholders.length);
-        console.log('==========================================');
         
         const insertSql = `
             INSERT INTO "${process.env.ORACLE_SCHEMA}"."PROPOSALS" (${columns.join(', ')})
@@ -845,6 +831,13 @@ app.post('/api/proposals/:id/copy-to-new-pursuit', async (req, res) => {
         columns.forEach(col => {
             newData[col] = pursuit[col];
         });
+        
+        // Append " - Copy" to the title to distinguish from original
+        console.log('Original title:', newData.TITLE);
+        if (newData.TITLE) {
+            newData.TITLE = newData.TITLE + ' - Copy';
+        }
+        console.log('New title:', newData.TITLE);
 
         const placeholders = columns.map(col => `:${col}`);
         const insertSql = `
